@@ -23,6 +23,7 @@ def entropy_joint(pXY):
 
     Args:
         pXY ([numpy.ndarray]): Joint Probability
+        normalized
 
     Returns:
         numpy.float64: Joint Entropy computed
@@ -31,7 +32,7 @@ def entropy_joint(pXY):
     return -np.nansum(pXY * np.log2(pXY))
 
 
-def conditional_entropy(pXY, pX):
+def conditional_entropy(pXY, pX, normalized=False):
     """
     This Function computes the conditional entropy using its definition.
 
@@ -42,11 +43,16 @@ def conditional_entropy(pXY, pX):
     Returns:
         numpy.float64: Conditional Entropy
     """
+
     pY_givenX = pXY / pX
-    return - np.nansum(pXY * np.log2(pY_givenX))
+    EYgivenX = - np.nansum(pXY * np.log2(pY_givenX))
+    if normalized:
+        return EYgivenX / entropy(pX)
+    else:
+        return EYgivenX
 
 
-def mutual_information(pXY, pX, pY):
+def mutual_information(pXY, pX, pY, normalized=False):
     """
     This Function computes the Mutual Information using 
     one of the relationships with the Entropy.
@@ -59,5 +65,8 @@ def mutual_information(pXY, pX, pY):
     Returns:
         numpy.float64: Mutual Information
     """
-    
-    return entropy(pX) + entropy(pY) - entropy_joint(pXY)
+    MI = entropy(pX) + entropy(pY) - entropy_joint(pXY)
+    if normalized:
+        return MI / entropy_joint(pXY)
+    else:
+        return MI
