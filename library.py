@@ -1,4 +1,5 @@
 import numpy as np 
+from scipy.special import xlogy
 
 
 def entropy(pX):
@@ -9,12 +10,9 @@ def entropy(pX):
         pX ([numpy.array]): Probability mass function of X
 
     Returns:
-        numpy.float64: Entropy computed 
+        numpy.float64: Shannon Entropy in nats units
     """
-
-    'I find the unique values of x in order to get the mass function of x'
-    
-    return np.nansum(-pX * np.log2(pX)) # Return the entropy computed as defined by Shannon 
+    return -xlogy(pX, pX)
 
 
 def entropy_joint(pXY):
@@ -26,10 +24,10 @@ def entropy_joint(pXY):
         normalized
 
     Returns:
-        numpy.float64: Joint Entropy computed
+        numpy.float64: Joint Entropy in nats
     """
 
-    return -np.nansum(pXY * np.log2(pXY))
+    return -xlogy(pXY, pXY)
 
 
 def conditional_entropy(pXY, pX, normalized=False):
@@ -45,7 +43,8 @@ def conditional_entropy(pXY, pX, normalized=False):
     """
 
     pY_givenX = pXY / pX
-    EYgivenX = - np.nansum(pXY * np.log2(pY_givenX))
+    EYgivenX = -xlogy(pXY, pY_givenX)
+    
     if normalized:
         return EYgivenX / entropy(pX)
     else:
