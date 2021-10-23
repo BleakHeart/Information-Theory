@@ -12,10 +12,11 @@ def entropy(pX):
     Returns:
         numpy.float64: Shannon Entropy in nats units
     """
+
     return -xlogy(pX, pX)
 
 
-def entropy_joint(pXY):
+def entropy_joint(pXY, normalized=False):
     """
     This Function computes the joint entropy using its definition.
 
@@ -26,8 +27,14 @@ def entropy_joint(pXY):
     Returns:
         numpy.float64: Joint Entropy in nats
     """
+    E_joint = -xlogy(pXY, pXY)
 
-    return -xlogy(pXY, pXY)
+    if normalized:
+        pX = pXY.sum(axis=0)
+        pY = pXY.sum(axis=1)
+        return E_joint / (entropy(pX) + entropy(pY))
+    else:
+        return E_joint
 
 
 def conditional_entropy(pXY, pX, normalized=False):
