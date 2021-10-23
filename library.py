@@ -6,52 +6,58 @@ def entropy(pX):
     This function calculates the entropy given an input dataset
 
     Args:
-        pX ([numpy.ndarray]): Input probability mass distribution
+        pX ([numpy.array]): Probability mass function of X
 
     Returns:
-        numpy.float64: It is the computed entropy 
+        numpy.float64: Entropy computed 
     """
 
     'I find the unique values of x in order to get the mass function of x'
     
-    return np.sum(-pX * np.log2(pX)) # Return the entropy computed as defined by Shannon 
+    return np.nansum(-pX * np.log2(pX)) # Return the entropy computed as defined by Shannon 
 
 
 def entropy_joint(pXY):
-    """[summary]
+    """
+    This Function computes the joint entropy using its definition.
 
     Args:
-        x ([type]): [description]
-        numBins (int, optional): [description]. Defaults to 30.
+        pXY ([numpy.ndarray]): Joint Probability
 
     Returns:
-        [type]: [description]
+        numpy.float64: Joint Entropy computed
     """
 
-    return -np.sum(pXY * np.log2(pXY))
+    return -np.nansum(pXY * np.log2(pXY))
 
 
 def conditional_entropy(pXY, pX):
-    """[summary]
+    """
+    This Function computes the conditional entropy using its definition.
 
     Args:
-        pXY ([type]): [description]
-        pX ([type]): [description]
+        pXY ([numpy.ndarray]): Joint Probability
+        pX ([numpy.array]): Probability mass function of X
 
     Returns:
-        [type]: [description]
+        numpy.float64: Conditional Entropy
     """
     pY_givenX = pXY / pX
-    return - np.sum(pXY * np.log2(pY_givenX)) 
+    return - np.nansum(pXY * np.log2(pY_givenX))
 
 
 def mutual_information(pXY, pX, pY):
-    """[summary]
+    """
+    This Function computes the Mutual Information using 
+    one of the relationships with the Entropy.
 
     Args:
-        pXY ([type]): [description]
-        pX ([type]): [description]
-        pY ([type]): [description]
+        pXY ([numpy.ndarray]): Joint Probability
+        pX ([numpy.array]): Probability mass function of X
+        pY ([numpy.array]): Probability mass function of Y
+
+    Returns:
+        numpy.float64: Mutual Information
     """
     
     return entropy(pX) + entropy(pY) - entropy_joint(pXY)
