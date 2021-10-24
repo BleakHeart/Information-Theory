@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 .history/
+
+# Do not consider some systemfiles
+.DS_Store
