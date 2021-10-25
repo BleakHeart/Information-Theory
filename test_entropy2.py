@@ -2,7 +2,7 @@ import numpy as np
 from library import entropy
 import matplotlib.pyplot as plt
 
-# Defining the Probabilities and the Entropy list
+
 P = np.linspace(0, 1, 100)  # p0 array probabilities
 S = []                      # Entropy empty list
 
