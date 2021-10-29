@@ -1,5 +1,5 @@
 import numpy as np
-from library import entropy
+from library import E
 import matplotlib.pyplot as plt
 
 
@@ -17,7 +17,7 @@ for p0 in P:
     pdf = counts / counts.sum()
 
     # saving the entropy value for this set of data
-    S.append(entropy(pdf))
+    S.append(E(pdf))
 
 
 # Plotting the results
