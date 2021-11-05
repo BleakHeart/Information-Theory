@@ -1,6 +1,8 @@
 import numpy as np
-from library import E
+from library_discrete import E
 import matplotlib.pyplot as plt
+from library_continuos import diff_E
+from scipy.stats import norm
 
 
 P = np.linspace(0, 1, 100)  # p0 array probabilities
@@ -25,3 +27,28 @@ plt.plot(P, S)
 plt.xlabel(r'$p_0$')
 plt.ylabel('Entropy (S)')
 plt.show()
+
+
+# Computing the difference between real pmf and the estimated one 
+
+pmfReal = [0.30, 0.70]
+
+samples = np.random.choice([0, 1], p=pmfReal, size=100)
+_, pmfEstimated = np.unique(samples, return_counts=1)
+pmfEstimated = pmfEstimated / pmfEstimated.sum()
+
+print(E(pmfReal) - E(pmfEstimated))
+
+
+# Computing the difference between the true pdf and the estimated one
+
+x = np.linspace(-5, 5, 100)
+dxReal = x[1] - x[0]
+pdfReal = norm.pdf(x)
+
+samples = np.random.normal(size=1000)
+pdfEstimated, bins = np.histogram(samples, bins=300, density=True)
+dxEstimated = bins[1] - bins[0]
+
+# increasing the samples size, the difference tends to zero
+print(diff_E(pdfReal, dxReal) - diff_E(pdfEstimated, dxEstimated))

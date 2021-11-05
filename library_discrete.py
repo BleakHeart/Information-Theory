@@ -41,13 +41,10 @@ def CE(pXY, pX):
         pX ([numpy.array]): Probability mass function of X
 
     Returns:
-        numpy.float64: Conditional Entropy
+        numpy.float64: Conditional Entropy using one of its properties
     """
 
-    pY_givenX = pXY / pX
-    EYgivenX = -xlogy(pXY, pY_givenX).sum()
-    
-    return EYgivenX
+    return EJ(pXY) - E(pX)
 
 
 def MI(pXY, pX, pY):
