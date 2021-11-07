@@ -10,7 +10,7 @@ def E(pX):
         pX ([numpy.array]): Probability mass function of X
 
     Returns:
-        numpy.float64: Shannon Entropy in nats units
+        float: Shannon Entropy in nats units
     """
 
     return -xlogy(pX, pX).sum()
@@ -25,7 +25,7 @@ def EJ(pXY):
         normalized
 
     Returns:
-        numpy.float64: Joint Entropy in nats
+        float: Joint Entropy in nats
     """
     E_joint = -xlogy(pXY, pXY).sum()
 
@@ -41,7 +41,7 @@ def CE(pXY, pX):
         pX ([numpy.array]): Probability mass function of X
 
     Returns:
-        numpy.float64: Conditional Entropy using one of its properties
+        float: Conditional Entropy using one of its properties
     """
 
     return EJ(pXY) - E(pX)
@@ -58,7 +58,7 @@ def MI(pXY, pX, pY):
         pY ([numpy.array]): Probability mass function of Y
 
     Returns:
-        numpy.float64: Mutual Information
+        float: Mutual Information
     """
     
     return E(pX) + E(pY) - E(pXY)
@@ -72,7 +72,7 @@ def EJ_norm(pXY):
         pXY ([numpy.ndarray]): Joint Probability
 
     Returns:
-        numpy.float64: Normalized Joint Entropy in nats
+        float: Normalized Joint Entropy in nats
     """
     E_joint = EJ(pXY, pXY)
 
@@ -92,7 +92,7 @@ def CE_norm(pXY, pX):
         pX ([numpy.array]): Probability mass function of X
 
     Returns:
-        numpy.float64: Normalized Conditional Entropy
+        float: Normalized Conditional Entropy
     """
 
     pY_givenX = pXY / pX
@@ -111,7 +111,7 @@ def MI_norm(pXY, pX, pY):
         pY ([numpy.array]): Probability mass function of Y
 
     Returns:
-        numpy.float64: Mutual Information
+        float: Mutual Information
     """
     
     return ( MI(pXY, pX, pY) ) / EJ(pXY)
