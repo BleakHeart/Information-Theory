@@ -3,7 +3,7 @@ from library_discrete import E
 import matplotlib.pyplot as plt
 from library_continuos import diff_E
 from scipy.stats import norm
-import seaborn as sns 
+import seaborn as sns
 
 
 P = np.linspace(0, 1, 100)  # p0 array probabilities
