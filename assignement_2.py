@@ -11,10 +11,10 @@ dxReal = x[1] - x[0]
 pdfReal = norm.pdf(x)
 
 n_generated = 100000  # samples number to generate
-E_pdf = []
 
 
 # Computing the difference between the true pdf and the estimated one
+E_pdf = []
 for i in range(1000):
     # generating the sample
     samples = np.random.normal(size=n_generated)
