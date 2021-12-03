@@ -41,32 +41,3 @@ axs[1].set_ylabel('Entropy (S)')
 axs[1].set_title('Results from the estimated pmf')
 
 plt.show()
-
-
-# Computing the difference between the true pdf and the estimated one
-
-x = np.linspace(-5, 5, 100)
-dxReal = x[1] - x[0]
-pdfReal = norm.pdf(x)
-
-n_generated = 10000
-E_pdf = []
-
-for i in range(1000):
-    samples = np.random.normal(size=n_generated)
-
-    # calculating optimal number of bins with the Scott's Rule
-    n_bins = int(3.49 * np.std(samples) * n_generated ** (1/3))
-
-    pdfEstimated, bins = np.histogram(samples, bins=n_bins, density=True)
-    dxEstimated = bins[1] - bins[0]
-
-    E_pdf.append(diff_E(pdfEstimated, dxEstimated))
-
-
-# increasing the samples size, the difference tends to zero
-
-sns.boxplot(x=E_pdf)
-plt.xlabel('Estimated Entropy')
-plt.title(f'Real pdf Entropy: {diff_E(pdfReal, dxReal):.2f}')
-plt.show()
