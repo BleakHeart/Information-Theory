@@ -3,8 +3,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from itertools import combinations
-from library_pmf import *
-from library_discrete import MI, E
+from library.pmf_estimators import *
+from library.information_discrete import MI, E
 
 
 df = sns.load_dataset("iris")

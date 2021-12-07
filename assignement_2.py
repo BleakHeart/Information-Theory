@@ -1,7 +1,8 @@
 import numpy as np
-from library_discrete import E
+from library.information_discrete import E
+from library.information_continuos import diff_E
 import matplotlib.pyplot as plt
-from library_continuos import diff_E
+
 from scipy.stats import norm
 import seaborn as sns
 
