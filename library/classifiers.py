@@ -5,32 +5,34 @@ from statsmodels.nonparametric.kernel_density import KDEMultivariate, KDEMultiva
 import pandas as pd
 
 
-class Classifier():
-    def accuracy(self, y_test, y_pred):
-        return np.sum(y_test == y_pred) / len(y_test)
 
-    def visualize(self, y_true, y_pred, target):
-        
-        tr = pd.DataFrame(data=y_true, columns=[target])
-        pr = pd.DataFrame(data=y_pred, columns=[target])
-        
-        
-        fig, ax = plt.subplots(1, 2, sharex='col', sharey='row', figsize=(15,6))
-        
-        sns.countplot(x=target, data=tr, ax=ax[0], palette='viridis', alpha=0.7, hue=target, dodge=False)
-        sns.countplot(x=target, data=pr, ax=ax[1], palette='viridis', alpha=0.7, hue=target, dodge=False)
-        
+def accuracy(y_test, y_pred):
+    return np.sum(y_test == y_pred) / len(y_test)
 
-        fig.suptitle('True vs Predicted Comparison', fontsize=20)
+def visualize(y_true, y_pred, target, decoder=None):
+    
+    tr = pd.DataFrame(data=y_true, columns=[target])
+    pr = pd.DataFrame(data=y_pred, columns=[target])
+    if decoder != None:
+        tr[target] = tr[target].map(decoder)
+        pr[target] = pr[target].map(decoder)
+    
+    fig, ax = plt.subplots(1, 2, sharex='col', sharey='row', figsize=(15,6))
+    
+    sns.countplot(x=target, data=tr, ax=ax[0], palette='viridis', alpha=0.7, hue=target, dodge=False)
+    sns.countplot(x=target, data=pr, ax=ax[1], palette='viridis', alpha=0.7, hue=target, dodge=False)
+    
 
-        ax[0].tick_params(labelsize=12)
-        ax[1].tick_params(labelsize=12)
-        ax[0].set_title("True values", fontsize=18)
-        ax[1].set_title("Predicted values", fontsize=18)
-        plt.show()
+    fig.suptitle('True vs Predicted Comparison', fontsize=20)
+
+    ax[0].tick_params(labelsize=12)
+    ax[1].tick_params(labelsize=12)
+    ax[0].set_title("True values", fontsize=18)
+    ax[1].set_title("Predicted values", fontsize=18)
+    plt.show()
 
 
-class Bayes_Classifier(Classifier):
+class Bayes_Classifier():
     def fit(self, features, target, dep_type, indep_type, bw=None) -> None:
         self.n_classes = np.unique(target).size
         self.n_features = features.shape[1]
@@ -56,7 +58,7 @@ class Bayes_Classifier(Classifier):
         return np.argmax(PcX, axis=1)
 
 
-class NB_classifier(Classifier):
+class NB_classifier():
     def fit(self, features, target, dep_type, indep_type, bw=None) -> None:
         self.n_classes = np.unique(target).size
         self.n_features = features.shape[1]
@@ -94,7 +96,7 @@ class NB_classifier(Classifier):
         return np.argmax(c, axis=1)
     
 
-class Gaussian_NB(Classifier):
+class Gaussian_NB():
     def calc_statistics(self, features, target):
         self.mean = np.zeros((self.n_classes, self.n_features))
         self.var = np.zeros((self.n_classes, self.n_features))
