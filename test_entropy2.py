@@ -12,10 +12,10 @@ fig_width = fig_width_pt*inches_per_pt  # width in inches
 fig_height =fig_width*golden_mean       # height in inches
 fig_size = [fig_width,fig_height]
 params = {'backend': 'ps',
-          'axes.labelsize': 10,
-          'legend.fontsize': 10,
-          'xtick.labelsize': 8,
-          'ytick.labelsize': 8,
+          'axes.labelsize': 14,
+          'legend.fontsize': 14,
+          'xtick.labelsize': 10,
+          'ytick.labelsize': 10,
           'figure.figsize': fig_size,  
           'axes.axisbelow': True}
 
