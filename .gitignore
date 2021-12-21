@@ -132,6 +132,3 @@ dmypy.json
 
 # Do not consider some systemfiles
 .DS_Store
-
-*.png
-*.jpg
