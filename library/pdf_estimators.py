@@ -1,5 +1,7 @@
 import numpy as np 
 import pandas as pd
+from sklearn.neighbors import KernelDensity
+
 
 def gaussian(u):
     """Gaussian kernel
@@ -33,7 +35,29 @@ def kde(data, kernel):
 
     u = (points - data[:, np.newaxis]) / h
 
-    mixture = gaussian(u).sum(axis=0)
+    mixture = kernel(u).sum(axis=0)
     mixture /= np.abs(mixture).max()
 
     return mixture
+
+def kde_univariate(data, kernel):
+    """function to estimate the probability density function
+       given a feature and a kernel.
+
+    Args:
+        data (np.array): Data used to estimate the density function
+        kernel (str): kernel used to estimate the density function
+    """
+    if isinstance(data, pd.Series):
+        data = data.to_numpy()
+
+
+    iqr = np.subtract(*np.percentile(data, [75, 25]))
+    m = np.min([np.sqrt(np.var(data)), iqr / 1.349])
+    h = 0.9 * m / np.power(data.size, 1/5)  # Silvermann's optimum estimate
+
+    kde = KernelDensity(kernel=kernel, bandwidth=h).fit(data)
+    x_domain = np.linspace(min(data), max(data), 1000)
+    pdf = np.exp(kde.score_samples(x_domain))
+    
+    return x_domain, pdf
