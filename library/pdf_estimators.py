@@ -1,5 +1,6 @@
 import numpy as np 
 import pandas as pd
+from statsmodels.nonparametric.kde import KDEUnivariate
 from sklearn.neighbors import KernelDensity
 
 
@@ -40,24 +41,17 @@ def kde(data, kernel):
 
     return mixture
 
-def kde_univariate(data, kernel):
-    """function to estimate the probability density function
-       given a feature and a kernel.
 
-    Args:
-        data (np.array): Data used to estimate the density function
-        kernel (str): kernel used to estimate the density function
-    """
-    if isinstance(data, pd.Series):
-        data = data.to_numpy()
+def kde_sklearn(x, kernel):
+    """Kernel Density Estimation with Scikit-learn"""
+    x_grid = np.linspace(x.min(), x.max(), 5000)
 
+    iqr = np.subtract(*np.percentile(x, [75, 25]))
+    m = np.min([np.sqrt(np.var(x)), iqr / 1.349])
+    h = 0.9 * m / np.power(x.size, 1/5)  # Silvermann's optimum estimate
 
-    iqr = np.subtract(*np.percentile(data, [75, 25]))
-    m = np.min([np.sqrt(np.var(data)), iqr / 1.349])
-    h = 0.9 * m / np.power(data.size, 1/5)  # Silvermann's optimum estimate
-
-    kde = KernelDensity(kernel=kernel, bandwidth=h).fit(data)
-    x_domain = np.linspace(min(data), max(data), 1000)
-    pdf = np.exp(kde.score_samples(x_domain))
-    
-    return x_domain, pdf
+    kde_skl = KernelDensity(bandwidth=h, kernel=kernel)
+    kde_skl.fit(x[:, np.newaxis])
+    # score_samples() returns the log-likelihood of the samples
+    log_pdf = kde_skl.score_samples(x_grid[:, np.newaxis])
+    return x_grid, np.exp(log_pdf)
