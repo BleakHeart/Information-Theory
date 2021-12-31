@@ -43,18 +43,21 @@ class Bayes_Classifier():
             bw = 'normal_reference'
         else:
             bw = bw
-        
+        # computing P(X|C)
         self.kde_Xc = KDEMultivariateConditional(endog=features, exog=target,
                                         dep_type=dep_type, indep_type=indep_type,
                                         bw=bw).pdf
+        # computing the joint probability P(X)
         self.kde_X = KDEMultivariate(data=features, var_type=dep_type).pdf
 
     def evaluate(self, features):
         n = features.shape[0]
-
+        # Computing the conditional probability P(X|c) for the new data 
         PXc = np.array([self.kde_Xc(features, [i] * n) for i in range(self.n_classes)])
+        # Computing the conditional probability P(c|X)
         PcX = ((PXc.T * self.Prior).T / self.kde_X(features)).T
 
+        # Returning the class prediction
         return np.argmax(PcX, axis=1)
 
 
@@ -71,15 +74,16 @@ class NB_classifier():
             bw = bw
 
         self.kde_Xc = []
-
+        # computing the P(X_i|c) for each feature
         for i in range(self.n_features):
             self.kde_Xc.append(KDEMultivariateConditional(endog=features[:, i], exog=target, 
                                                      dep_type=dep_type, 
                                                      indep_type=indep_type, 
                                                      bw='normal_reference').pdf)
-        
+        # computing the joint probability P(X)
         self.kde_X = KDEMultivariate(features, var_type='cccc').pdf
 
+        # computing the prior probability 
         self.Prior = np.unique(target, return_counts=True)[1] / target.size
     
     def evaluate(self, features):
@@ -89,15 +93,20 @@ class NB_classifier():
         for d in range(n_rows):
             for i in range(self.n_classes):
                 tmp = 1
+                # computing the P(X|c)= product of P(X_i|c)
                 for j in range(self.n_features):
                     tmp *= self.kde_Xc[j]([features[d, j]], [i])
                 
+                # computing P(c|X)
                 c[d, i] = tmp * self.Prior[i] / self.kde_X(features[d, :])
+        
+        # returning the class prediction
         return np.argmax(c, axis=1)
     
 
 class Gaussian_NB():
     def calc_statistics(self, features, target):
+        # Computing all the statistics needed for the gaussian model
         self.mean = np.zeros((self.n_classes, self.n_features))
         self.var = np.zeros((self.n_classes, self.n_features))
         for c in self.classes:
@@ -107,6 +116,15 @@ class Gaussian_NB():
         return self.mean, self.var
 
     def gaussian_density(self, features, class_idx):
+        """Function used to compute the gaussian pdf
+
+        Args:
+            features (np.array): array containing the features
+            class_idx ([int]): class index
+
+        Returns:
+            [type]: [description]
+        """
 
         mean = self.mean[class_idx]
         var = self.var[class_idx]
@@ -121,9 +139,12 @@ class Gaussian_NB():
 
         for c in range(self.n_classes):
             prior = np.log(self.prior[c])
+            # computing the log probability of P(X|c)
             conditional = np.sum(np.log(self.gaussian_density(x, c)), axis=1)
+            # computing the P(c|X)
             posteriors[:, c] = prior + conditional
-        
+            
+        # returning the class predictions
         return np.argmax(posteriors, axis=1)
     
 
