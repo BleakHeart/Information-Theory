@@ -24,10 +24,6 @@ for feature in features:
     x_vals, pmf = pmf_univariate(df_discr[feature])  # Computing the pmf
     Entropies.append(E(pmf))
 
-for i in range(n_features):
-    print(f'{features[i]}: {Entropies[i]}\n')
-
-
 MI_matrix = np.zeros((n_features, n_features))
 
 # Computing the Mutual information over all the features combinations
@@ -44,4 +40,13 @@ for i in combinations(range(n_features), 2):
 MI_matrix = pd.DataFrame(MI_matrix, columns=features, index=features)
 MI_matrix.columns.name = 'Mutual Information'
 MI_matrix[MI_matrix == 0] = Entropies # adding the entropies to the result
-print(MI_matrix)
+
+MI_matrix.to_csv("./Results/mi.csv", float_format='%.4f')
+
+"""data = MI_matrix.to_numpy()
+data = np.around(data, 4)
+columns = MI_matrix.columns.to_numpy()
+
+plt.table(cellText=data, colLabels=MI_matrix.columns, loc='center', cellLoc='center')
+plt.axis('off')
+plt.show()"""
