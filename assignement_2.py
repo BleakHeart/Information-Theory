@@ -4,35 +4,48 @@ from library.information_continuos import diff_E
 from library.pdf_estimators import *
 from scipy.stats import norm
 import seaborn as sns
+from library.plot import plot_settings, plot_kernels
 
 
-x = np.linspace(-5, 5, 10000)
-dxReal = x[1] - x[0]
-pdfReal = norm.pdf(x)
+xReal = np.linspace(-5, 5, 10000)
+dxReal = xReal[1] - xReal[0]
+pdfReal = norm.pdf(xReal)
+
+RealEntropy = diff_E(pdfReal, xReal)
 
 n_generated = 10000  # samples number to generate
 E_pdf = []
 kernels = ['gaussian', 'tophat', 'epanechnikov', 'exponential', 'linear', 'cosine']
 
-
-# Computing the difference between the true pdf and the estimated one
-n_sim = 100
-results = np.zeros((len(kernels), 3))
-for j, kernel in enumerate(kernels):
+n_samples = [np.power(10, i) for i in range(1, 6)]
+results = np.zeros((len(n_samples), len(kernels)))
+for i, kernel in enumerate(kernels):
     E_pdf = []
-    # generating the sample
-    samples = np.random.normal(size=(n_generated, n_sim))
-    for i in range(n_sim):
-        x, pdfEstimated = kde_sklearn(samples[:, i], kernel)
+    for j, n in enumerate(n_samples):
+        samples = np.random.normal(size=n)
+        x, pdfEstimated = kde_sklearn(samples, kernel)
 
-        dx = x[1] - x[0]
+        E_pdf.append(diff_E(pdfEstimated, x))
 
-        E_pdf.append(diff_E(pdfEstimated, dx))
-    print(f'Fatto Kernel: {kernel}')
-    
-    results[j, :] = (np.mean(E_pdf), *np.quantile(E_pdf, [0.25, 0.75]))
+    print(f'fatto kernel {kernel}')
+    results[:, i] = E_pdf
 
-res = pd.DataFrame({'Kernel': kernels, 'Mean Entropy': results[:, 0], 
-                    'q1 Entropy': results[:, 1], 'q2 Entropy': results[:, 2]})
+df = pd.DataFrame({'N generated': n_samples})
 
-res.to_csv('continuos_entropy_kernels.csv', index=None)
+df[kernels] = results
+df = df.set_index('N generated')
+df
+
+plot_settings()
+fig, axs = plt.subplots(1, 2)
+plot_kernels(axs[0])
+
+df.plot(logx=True, ax=axs[1], lw=0.5)
+axs[1].plot(n_samples, [diff_E(pdfReal, xReal)]* len(n_samples), label='exact pdf', lw=0.5)
+axs[1].legend()
+axs[1].grid()
+axs[1].set_title('Differential Entropy')
+fig.tight_layout()
+#plt.savefig('./Images/Kernels_diffential', dpi=600)
+
+print(f'L\'entropia teoria vale: {RealEntropy}')

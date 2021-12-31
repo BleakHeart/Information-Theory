@@ -28,18 +28,18 @@ def kde(data, kernel):
     data = np.asanyarray(data)
 
     points = np.linspace(min(data), max(data), 1000).reshape((1, -1))
-    points = np.concatenate([points] * N)
+    x_grid = np.concatenate([points] * N)
 
     iqr = np.subtract(*np.percentile(data, [75, 25]))
     m = np.min([np.sqrt(np.var(data)), iqr / 1.349])
     h = 0.9 * m / np.power(data.size, 1/5)  # Silvermann's optimum estimate
 
-    u = (points - data[:, np.newaxis]) / h
+    u = (x_grid - data[:, np.newaxis]) / h
 
-    mixture = kernel(u).sum(axis=0)
+    mixture = (kernel(u).sum(axis=0))
     mixture /= np.abs(mixture).max()
 
-    return mixture
+    return points.flatten(), mixture
 
 
 def kde_sklearn(x, kernel):
