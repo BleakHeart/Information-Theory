@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns 
 from statsmodels.nonparametric.kernel_density import KDEMultivariate, KDEMultivariateConditional
 import pandas as pd
-
+from sklearn import metrics
 
 
 def accuracy(y_test, y_pred):
-    return np.sum(y_test == y_pred) / len(y_test)
+    acc = metrics.accuracy_score(y_test, y_pred)
+    return acc
 
 def visualize(y_true, y_pred, target, decoder=None):
     
@@ -29,6 +30,8 @@ def visualize(y_true, y_pred, target, decoder=None):
     ax[1].tick_params(labelsize=12)
     ax[0].set_title("True values", fontsize=18)
     ax[1].set_title("Predicted values", fontsize=18)
+    ax[1].grid()
+    ax[0].grid()
     plt.show()
 
 
@@ -93,7 +96,7 @@ class NB_classifier():
         for d in range(n_rows):
             for i in range(self.n_classes):
                 tmp = 1
-                # computing the P(X|c)= product of P(X_i|c)
+                # computing the P(X|c)= product of P(x_i|c)
                 for j in range(self.n_features):
                     tmp *= self.kde_Xc[j]([features[d, j]], [i])
                 
