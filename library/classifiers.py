@@ -57,7 +57,7 @@ class Bayes_Classifier():
         n = features.shape[0]
         # Computing the conditional probability P(X|c) for the new data 
         PXc = np.array([self.kde_Xc(features, [i] * n) for i in range(self.n_classes)])
-        # Computing the conditional probability P(c|X)
+        # Computing the conditional probability P(c|X) = P(X|c) * P(c) / P(X)
         PcX = ((PXc.T * self.Prior).T / self.kde_X(features)).T
 
         # Returning the class prediction
@@ -100,7 +100,7 @@ class NB_classifier():
                 for j in range(self.n_features):
                     tmp *= self.kde_Xc[j]([features[d, j]], [i])
                 
-                # computing P(c|X)
+                # Computing the conditional probability P(c|X) = P(X|c) * P(c) / P(X)
                 c[d, i] = tmp * self.Prior[i] / self.kde_X(features[d, :])
         
         # returning the class prediction
@@ -126,13 +126,13 @@ class Gaussian_NB():
             class_idx ([int]): class index
 
         Returns:
-            [type]: [description]
+            np.ndarray: gaussian density function
         """
 
         mean = self.mean[class_idx]
         var = self.var[class_idx]
         
-        numerator = np.exp((-1/2)*((features - mean)**2) / (2 * var))
+        numerator = np.exp(-0.5 * (features - mean) ** 2 / (2 * var))
         denominator = np.sqrt(2 * np.pi * var)
 
         return numerator / denominator
@@ -144,7 +144,7 @@ class Gaussian_NB():
             prior = np.log(self.prior[c])
             # computing the log probability of P(X|c)
             conditional = np.sum(np.log(self.gaussian_density(x, c)), axis=1)
-            # computing the P(c|X)
+            # computing the P(c|X) = P(X|c) * P(c) / P(X)
             posteriors[:, c] = prior + conditional
             
         # returning the class predictions
