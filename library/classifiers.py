@@ -69,8 +69,6 @@ class NB_classifier():
         self.n_classes = np.unique(target).size
         self.n_features = features.shape[1]
 
-        self.Prior = np.unique(target, return_counts=True)[1] / target.size
-
         if bw == None:
             bw = 'normal_reference'
         else:
