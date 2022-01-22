@@ -130,7 +130,7 @@ class Gaussian_NB():
         mean = self.mean[class_idx]
         var = self.var[class_idx]
         
-        numerator = np.exp(-0.5 * (features - mean) ** 2 / (2 * var))
+        numerator = np.exp(- (features - mean) ** 2 / (2 * var))
         denominator = np.sqrt(2 * np.pi * var)
 
         return numerator / denominator
