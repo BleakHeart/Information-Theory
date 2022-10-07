@@ -10,13 +10,13 @@ def plot_settings():
     fig_width = fig_width_pt*inches_per_pt  # width in inches
     fig_height =fig_width*golden_mean       # height in inches
     fig_size = [fig_width,fig_height]
-    params = {'backend': 'ps',
-            'axes.labelsize': 14,
-            'legend.fontsize': 9,
-            'xtick.labelsize': 10,
-            'ytick.labelsize': 10,
-            'figure.figsize': fig_size,  
-            'axes.axisbelow': True}
+    params = {'backend': 'ps', 
+              'axes.labelsize': 14,
+              'legend.fontsize': 9,
+              'xtick.labelsize': 10,
+              'ytick.labelsize': 10,
+              'figure.figsize': fig_size,
+              'axes.axisbelow': True}
 
     mpl.rcParams.update(params)
 
